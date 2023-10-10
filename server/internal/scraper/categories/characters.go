@@ -28,6 +28,7 @@ type Character struct {
 	Bounty         string
 	Description    string
 	DevilFruitName string
+	AvatarSrc      string
 }
 
 func getCharacterLinksFromPage(pageURL string, wg *sync.WaitGroup, resultChan chan<- []string) {
@@ -98,6 +99,7 @@ func getCharacterFromPage(browser *rod.Browser, pageLink string, wg *sync.WaitGr
 	bloodtype := "N/A"
 	bounty := "N/A"
 	description := "N/A"
+	avatarSrc := ""
 
 	rod.Try(func() {
 		japaneseName = characterSection.Timeout(1*time.Second).MustElementR("h3", "/japanese name:/i").MustNext().MustText()
@@ -126,6 +128,18 @@ func getCharacterFromPage(browser *rod.Browser, pageLink string, wg *sync.WaitGr
 	rod.Try(func() {
 		bounty = characterSection.Timeout(1*time.Second).MustElementR("h3", "/bounty:/i").MustNext().MustText()
 	})
+	rod.Try(func() {
+		avatarImgElement := asideElement.Timeout(1 * time.Second).MustElement("div > div.wds-tab__content.wds-is-current > figure > a > img")
+		imgSrc := avatarImgElement.MustAttribute("src")
+		avatarSrc = *imgSrc
+	})
+	if avatarSrc == "" {
+		rod.Try(func() {
+			avatarImgElement := asideElement.Timeout(1 * time.Second).MustElement("figure > a > img")
+			imgSrc := avatarImgElement.MustAttribute("src")
+			avatarSrc = *imgSrc
+		})
+	}
 
 	for i := 0; i < 3; i++ {
 		selector := "body > div > p:nth-child(" + strconv.Itoa(i+4) + ")"
@@ -157,6 +171,7 @@ func getCharacterFromPage(browser *rod.Browser, pageLink string, wg *sync.WaitGr
 		Bounty:         utils.RemoveTextWithBrackets(bounty),
 		Description:    utils.RemoveTextWithBrackets(description),
 		DevilFruitName: utils.RemoveTextWithBrackets(devilFruitName),
+		AvatarSrc:      avatarSrc,
 	}
 	resultChan <- character
 }
@@ -183,25 +198,23 @@ func getCharactersFromLinks(pageLinks []string) []Character {
 }
 
 func createCharacterCSV(characters []Character) {
+	characterRows := [][]string{
+		{"japanese_name", "english_name", "debut", "affiliations", "origin", "age", "birthday", "blood_type", "bounty", "description", "devil_fruit_name", "avatar_src"},
+	}
+	for _, character := range characters {
+		row := []string{character.JapaneseName, character.EnglishName, character.Debut, character.Affiliations, character.Origin, character.Age, character.Birthday, character.BloodType, character.Bounty, character.Description, character.DevilFruitName, character.AvatarSrc}
+		characterRows = append(characterRows, row)
+	}
 	file, err := os.Create("./data/characters.csv")
 	if err != nil {
-		fmt.Println("Error creating CSV file:", err.Error())
+		fmt.Println("Error creating CSV file:", err)
 		return
 	}
 	defer file.Close()
 	writer := csv.NewWriter(file)
-
-	header := []string{"japanese_name", "english_name", "debut", "affiliations", "origin", "age", "birthday", "blood_type", "bounty", "description", "devil_fruit_name"}
-	if err := writer.Write(header); err != nil {
-		fmt.Println("Error writing row to file:", err.Error())
+	if err := writer.WriteAll(characterRows); err != nil {
+		fmt.Println("Error writing rows to file:", err)
 	}
-	for _, character := range characters {
-		row := []string{character.JapaneseName, character.EnglishName, character.Debut, character.Affiliations, character.Origin, character.Age, character.Birthday, character.BloodType, character.Bounty, character.Description, character.DevilFruitName}
-		if err := writer.Write(row); err != nil {
-			fmt.Println("Error writing row to file:", err.Error())
-		}
-	}
-	writer.Flush()
 }
 
 func LoadCharacters() {

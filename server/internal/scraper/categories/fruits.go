@@ -30,6 +30,7 @@ type DevilFruit struct {
 	PreviousUser string
 	CurrentUser  string
 	Description  string
+	AvatarSrc    string
 }
 
 func isDevilFruit(s string) bool {
@@ -116,6 +117,13 @@ func getDevilFruitFromPage(browser *rod.Browser, pageLink string, wg *sync.WaitG
 		}
 	}
 
+	avatarSrc := ""
+	rod.Try(func() {
+		avatarImgElement := asideElement.Timeout(1 * time.Second).MustElement("figure > a > img")
+		imgSrc := avatarImgElement.MustAttribute("src")
+		avatarSrc = *imgSrc
+	})
+
 	devilFruit := DevilFruit{
 		JapaneseName: utils.RemoveTextWithBrackets(japaneseName),
 		EnglishName:  utils.RemoveTextWithBrackets(englishName),
@@ -126,6 +134,7 @@ func getDevilFruitFromPage(browser *rod.Browser, pageLink string, wg *sync.WaitG
 		PreviousUser: utils.RemoveTextWithBrackets(previousUser),
 		CurrentUser:  utils.RemoveTextWithBrackets(currentUser),
 		Description:  utils.RemoveTextWithBrackets(description),
+		AvatarSrc:    avatarSrc,
 	}
 	resultChan <- devilFruit
 }
@@ -151,10 +160,10 @@ func getDevilFruitsFromLinks(pageLinks []string) []DevilFruit {
 
 func createDevilFruitCsv(devilFruits []DevilFruit) {
 	devilFruitRows := [][]string{
-		{"japanese_name", "english_name", "meaning", "usage_debut", "previous_user", "current_user", "description"},
+		{"japanese_name", "english_name", "meaning", "usage_debut", "previous_user", "current_user", "description", "avatar_src"},
 	}
 	for _, devilFruit := range devilFruits {
-		row := []string{devilFruit.JapaneseName, devilFruit.EnglishName, devilFruit.Meaning, devilFruit.UsageDebut, devilFruit.PreviousUser, devilFruit.CurrentUser, devilFruit.Description}
+		row := []string{devilFruit.JapaneseName, devilFruit.EnglishName, devilFruit.Meaning, devilFruit.UsageDebut, devilFruit.PreviousUser, devilFruit.CurrentUser, devilFruit.Description, devilFruit.AvatarSrc}
 		devilFruitRows = append(devilFruitRows, row)
 	}
 	file, err := os.Create("./data/fruits.csv")

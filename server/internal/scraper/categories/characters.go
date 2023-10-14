@@ -1,7 +1,6 @@
 package categories
 
 import (
-	"encoding/csv"
 	"fmt"
 	"os"
 	"strconv"
@@ -9,26 +8,13 @@ import (
 	"time"
 
 	"github.com/go-rod/rod"
+	"github.com/gocarina/gocsv"
+	"github.com/ikevinws/onepieceQL/pkg/csvmodels"
 	"github.com/ikevinws/onepieceQL/pkg/utils"
 )
 
 var CHARACTER_LIST_LINKS = [...]string{
 	"https://onepiece.fandom.com/wiki/List_of_Canon_Characters?action=render",
-}
-
-type Character struct {
-	JapaneseName   string
-	EnglishName    string
-	Debut          string
-	Affiliations   string
-	Origin         string
-	Age            string
-	Birthday       string
-	BloodType      string
-	Bounty         string
-	Description    string
-	DevilFruitName string
-	AvatarSrc      string
 }
 
 func getCharacterLinksFromPage(pageURL string, wg *sync.WaitGroup, resultChan chan<- []string) {
@@ -66,7 +52,7 @@ func getCharacterLinks() []string {
 	return characterLinks
 }
 
-func getCharacterFromPage(browser *rod.Browser, pageLink string, wg *sync.WaitGroup, resultChan chan<- Character) {
+func getCharacterFromPage(browser *rod.Browser, pageLink string, wg *sync.WaitGroup, resultChan chan<- csvmodels.CharacterCSV) {
 
 	defer wg.Done()
 	page := browser.MustPage(pageLink)
@@ -76,7 +62,7 @@ func getCharacterFromPage(browser *rod.Browser, pageLink string, wg *sync.WaitGr
 	})
 	if asideElement == nil {
 		fmt.Printf("could not find aside element: %s", pageLink)
-		resultChan <- Character{}
+		resultChan <- csvmodels.CharacterCSV{}
 		return
 	}
 	var characterSection *rod.Element = nil
@@ -85,7 +71,7 @@ func getCharacterFromPage(browser *rod.Browser, pageLink string, wg *sync.WaitGr
 	})
 	if characterSection == nil {
 		fmt.Printf("could not find character section element: %s", pageLink)
-		resultChan <- Character{}
+		resultChan <- csvmodels.CharacterCSV{}
 		return
 	}
 
@@ -159,7 +145,7 @@ func getCharacterFromPage(browser *rod.Browser, pageLink string, wg *sync.WaitGr
 		devilFruitName = characterDevilFruitSection.Timeout(1*time.Second).MustElementR("h3", "/japanese name:/i").MustNext().MustText()
 	})
 
-	character := Character{
+	character := csvmodels.CharacterCSV{
 		JapaneseName:   utils.RemoveTextWithBrackets(japaneseName),
 		EnglishName:    utils.RemoveTextWithBrackets(englishName),
 		Debut:          utils.RemoveTextWithBrackets(debut),
@@ -176,9 +162,9 @@ func getCharacterFromPage(browser *rod.Browser, pageLink string, wg *sync.WaitGr
 	resultChan <- character
 }
 
-func getCharactersFromLinks(pageLinks []string) []Character {
+func getCharactersFromLinks(pageLinks []string) []csvmodels.CharacterCSV {
 	var wg sync.WaitGroup
-	charactersChan := make(chan Character, len(pageLinks))
+	charactersChan := make(chan csvmodels.CharacterCSV, len(pageLinks))
 	browser := rod.New().MustConnect()
 	for _, link := range pageLinks {
 		go getCharacterFromPage(browser, link, &wg, charactersChan)
@@ -189,7 +175,7 @@ func getCharactersFromLinks(pageLinks []string) []Character {
 		close(charactersChan)
 	}()
 
-	characters := []Character{}
+	characters := []csvmodels.CharacterCSV{}
 	for character := range charactersChan {
 		characters = append(characters, character)
 	}
@@ -197,22 +183,14 @@ func getCharactersFromLinks(pageLinks []string) []Character {
 
 }
 
-func createCharacterCSV(characters []Character) {
-	characterRows := [][]string{
-		{"japanese_name", "english_name", "debut", "affiliations", "origin", "age", "birthday", "blood_type", "bounty", "description", "devil_fruit_name", "avatar_src"},
-	}
-	for _, character := range characters {
-		row := []string{character.JapaneseName, character.EnglishName, character.Debut, character.Affiliations, character.Origin, character.Age, character.Birthday, character.BloodType, character.Bounty, character.Description, character.DevilFruitName, character.AvatarSrc}
-		characterRows = append(characterRows, row)
-	}
+func createCharacterCSV(characters []csvmodels.CharacterCSV) {
 	file, err := os.Create("./data/characters.csv")
 	if err != nil {
 		fmt.Println("Error creating CSV file:", err)
 		return
 	}
 	defer file.Close()
-	writer := csv.NewWriter(file)
-	if err := writer.WriteAll(characterRows); err != nil {
+	if err := gocsv.MarshalFile(&characters, file); err != nil {
 		fmt.Println("Error writing rows to file:", err)
 	}
 }

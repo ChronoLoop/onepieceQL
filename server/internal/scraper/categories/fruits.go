@@ -1,7 +1,6 @@
 package categories
 
 import (
-	"encoding/csv"
 	"fmt"
 	"os"
 	"regexp"
@@ -10,6 +9,8 @@ import (
 	"time"
 
 	"github.com/go-rod/rod"
+	"github.com/gocarina/gocsv"
+	"github.com/ikevinws/onepieceQL/pkg/csvmodels"
 	"github.com/ikevinws/onepieceQL/pkg/utils"
 )
 
@@ -19,18 +20,6 @@ var DEVIL_FRUIT_CATEGORY_LINKS = [...]string{
 	"https://onepiece.fandom.com/wiki/Category:Zoan?action=render",
 	"https://onepiece.fandom.com/wiki/Category:Mythical_Zoan?action=render",
 	"https://onepiece.fandom.com/wiki/Category:Ancient_Zoan?action=render",
-}
-
-type DevilFruit struct {
-	JapaneseName string
-	EnglishName  string
-	Meaning      string
-	UsageDebut   string
-	Type         string
-	PreviousUser string
-	CurrentUser  string
-	Description  string
-	AvatarSrc    string
 }
 
 func isDevilFruit(s string) bool {
@@ -78,7 +67,7 @@ func getDevilFruitLinks() []string {
 	return allDevilFruitLinks
 }
 
-func getDevilFruitFromPage(browser *rod.Browser, pageLink string, wg *sync.WaitGroup, resultChan chan<- DevilFruit) {
+func getDevilFruitFromPage(browser *rod.Browser, pageLink string, wg *sync.WaitGroup, resultChan chan<- csvmodels.DevilFruitCSV) {
 	defer wg.Done()
 	page := browser.MustPage(pageLink)
 	asideElement := page.MustElement("body > div > aside")
@@ -124,7 +113,7 @@ func getDevilFruitFromPage(browser *rod.Browser, pageLink string, wg *sync.WaitG
 		avatarSrc = *imgSrc
 	})
 
-	devilFruit := DevilFruit{
+	devilFruit := csvmodels.DevilFruitCSV{
 		JapaneseName: utils.RemoveTextWithBrackets(japaneseName),
 		EnglishName:  utils.RemoveTextWithBrackets(englishName),
 		Meaning:      utils.RemoveTextWithBrackets(meaning),
@@ -132,16 +121,16 @@ func getDevilFruitFromPage(browser *rod.Browser, pageLink string, wg *sync.WaitG
 		Type:         utils.RemoveTextWithBrackets(fruitType),
 
 		PreviousUser: utils.RemoveTextWithBrackets(previousUser),
-		CurrentUser:  utils.RemoveTextWithBrackets(currentUser),
+		CurrentOwner: utils.RemoveTextWithBrackets(currentUser),
 		Description:  utils.RemoveTextWithBrackets(description),
 		AvatarSrc:    avatarSrc,
 	}
 	resultChan <- devilFruit
 }
-func getDevilFruitsFromLinks(pageLinks []string) []DevilFruit {
-	devilFruits := []DevilFruit{}
+func getDevilFruitsFromLinks(pageLinks []string) []csvmodels.DevilFruitCSV {
+	devilFruits := []csvmodels.DevilFruitCSV{}
 	var wg sync.WaitGroup
-	devilFruitChan := make(chan DevilFruit, len(pageLinks))
+	devilFruitChan := make(chan csvmodels.DevilFruitCSV, len(pageLinks))
 	browser := rod.New().MustConnect()
 	for _, link := range pageLinks {
 		go getDevilFruitFromPage(browser, link, &wg, devilFruitChan)
@@ -158,22 +147,14 @@ func getDevilFruitsFromLinks(pageLinks []string) []DevilFruit {
 	return devilFruits
 }
 
-func createDevilFruitCsv(devilFruits []DevilFruit) {
-	devilFruitRows := [][]string{
-		{"japanese_name", "english_name", "meaning", "usage_debut", "previous_user", "current_user", "description", "avatar_src"},
-	}
-	for _, devilFruit := range devilFruits {
-		row := []string{devilFruit.JapaneseName, devilFruit.EnglishName, devilFruit.Meaning, devilFruit.UsageDebut, devilFruit.PreviousUser, devilFruit.CurrentUser, devilFruit.Description, devilFruit.AvatarSrc}
-		devilFruitRows = append(devilFruitRows, row)
-	}
+func createDevilFruitCsv(devilFruits []csvmodels.DevilFruitCSV) {
 	file, err := os.Create("./data/fruits.csv")
 	if err != nil {
 		fmt.Println("Error creating CSV file:", err)
 		return
 	}
 	defer file.Close()
-	writer := csv.NewWriter(file)
-	if err := writer.WriteAll(devilFruitRows); err != nil {
+	if err := gocsv.MarshalFile(&devilFruits, file); err != nil {
 		fmt.Println("Error writing rows to file:", err)
 	}
 }

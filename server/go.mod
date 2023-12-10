@@ -9,6 +9,8 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.40.2
 	github.com/go-rod/rod v0.114.3
 	github.com/gocarina/gocsv v0.0.0-20230616125104-99d496ca653d
+	github.com/graphql-go/graphql v0.8.1
+	github.com/graphql-go/handler v0.2.3
 	github.com/jackc/pgx/v5 v5.4.3
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/joho/godotenv v1.5.1

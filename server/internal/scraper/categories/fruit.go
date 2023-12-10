@@ -80,10 +80,10 @@ func getDevilFruitFromPage(browser *rod.Browser, pageLink string, wg *sync.WaitG
 	})
 	meaning := asideElement.MustElementR("section h3", "/meaning:/i").MustNext().MustText()
 	usageDebut := asideElement.MustElementR("section h3", "/usage debut:/i").MustNext().MustText()
-	previousUser := "N/A"
+	previousOwner := "N/A"
 	rod.Try(func() {
-		if previousUserHeader := asideElement.Timeout(2*time.Second).MustElementR("section h3", "/previous (user|owner):/i"); previousUserHeader != nil {
-			previousUser = previousUserHeader.MustNext().MustText()
+		if previousOwnerHeader := asideElement.Timeout(2*time.Second).MustElementR("section h3", "/previous (user|owner):/i"); previousOwnerHeader != nil {
+			previousOwner = previousOwnerHeader.MustNext().MustText()
 		}
 	})
 	currentUser := "N/A"
@@ -120,10 +120,10 @@ func getDevilFruitFromPage(browser *rod.Browser, pageLink string, wg *sync.WaitG
 		UsageDebut:   utils.RemoveTextWithBrackets(usageDebut),
 		Type:         utils.RemoveTextWithBrackets(fruitType),
 
-		PreviousUser: utils.RemoveTextWithBrackets(previousUser),
-		CurrentOwner: utils.RemoveTextWithBrackets(currentUser),
-		Description:  utils.RemoveTextWithBrackets(description),
-		AvatarSrc:    avatarSrc,
+		PreviousOwner: utils.RemoveTextWithBrackets(previousOwner),
+		CurrentOwner:  utils.RemoveTextWithBrackets(currentUser),
+		Description:   utils.RemoveTextWithBrackets(description),
+		AvatarSrc:     avatarSrc,
 	}
 	resultChan <- devilFruit
 }

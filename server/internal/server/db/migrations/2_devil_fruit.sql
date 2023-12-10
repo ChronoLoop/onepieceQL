@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS devil_fruits (
 	type TEXT,
 	description TEXT,
 	current_owner TEXT,
+	previous_owner TEXT,
 	avatar_src TEXT
 ) INHERITS (time);
 

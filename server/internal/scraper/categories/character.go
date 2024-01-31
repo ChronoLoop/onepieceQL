@@ -58,19 +58,19 @@ func getCharacterFromPage(browser *rod.Browser, pageLink string, wg *sync.WaitGr
 	page := browser.MustPage(pageLink)
 	var asideElement *rod.Element = nil
 	rod.Try(func() {
-		asideElement = page.Timeout(5 * time.Second).MustElement("body > div > aside")
+		asideElement = page.MustElement("body > div > aside")
 	})
 	if asideElement == nil {
-		fmt.Printf("could not find aside element: %s", pageLink)
+		fmt.Printf("could not find aside element: %s\n", pageLink)
 		resultChan <- csvmodels.CharacterCSV{}
 		return
 	}
 	var characterSection *rod.Element = nil
 	rod.Try(func() {
-		characterSection = asideElement.Timeout(1 * time.Second).MustElement("section:nth-of-type(1)")
+		characterSection = asideElement.MustElement("section:nth-of-type(1)")
 	})
 	if characterSection == nil {
-		fmt.Printf("could not find character section element: %s", pageLink)
+		fmt.Printf("could not find character section element: %s\n", pageLink)
 		resultChan <- csvmodels.CharacterCSV{}
 		return
 	}
@@ -127,7 +127,7 @@ func getCharacterFromPage(browser *rod.Browser, pageLink string, wg *sync.WaitGr
 		})
 	}
 
-	for i := 0; i < 3; i++ {
+	for i := 0; i < 5; i++ {
 		selector := "body > div > p:nth-child(" + strconv.Itoa(i+4) + ")"
 		rod.Try(func() {
 			if descriptionParagraphElement := page.Timeout(1 * time.Second).MustElement(selector); descriptionParagraphElement != nil {
@@ -137,6 +137,9 @@ func getCharacterFromPage(browser *rod.Browser, pageLink string, wg *sync.WaitGr
 		if description != "N/A" && description != "" {
 			break
 		}
+	}
+	if description == "" {
+		description = "N/A"
 	}
 
 	devilFruitName := "N/A"

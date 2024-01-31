@@ -94,7 +94,7 @@ func getDevilFruitFromPage(browser *rod.Browser, pageLink string, wg *sync.WaitG
 	})
 	fruitType := asideElement.MustElementR("section h3", "/type:/i").MustNext().MustText()
 	description := "N/A"
-	for i := 0; i < 3; i++ {
+	for i := 0; i < 5; i++ {
 		selector := "body > div > p:nth-child(" + strconv.Itoa(i+4) + ")"
 		rod.Try(func() {
 			if descriptionParagraphElement := page.Timeout(2 * time.Second).MustElement(selector); descriptionParagraphElement != nil {
@@ -104,6 +104,10 @@ func getDevilFruitFromPage(browser *rod.Browser, pageLink string, wg *sync.WaitG
 		if description != "N/A" && description != "" {
 			break
 		}
+	}
+
+	if description == "" {
+		description = "N/A"
 	}
 
 	avatarSrc := ""

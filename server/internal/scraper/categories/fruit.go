@@ -118,15 +118,15 @@ func getDevilFruitFromPage(browser *rod.Browser, pageLink string, wg *sync.WaitG
 	})
 
 	devilFruit := csvmodels.DevilFruitCSV{
-		JapaneseName: utils.RemoveTextWithBrackets(japaneseName),
-		EnglishName:  utils.RemoveTextWithBrackets(englishName),
-		Meaning:      utils.RemoveTextWithBrackets(meaning),
-		UsageDebut:   utils.RemoveTextWithBrackets(usageDebut),
-		Type:         utils.RemoveTextWithBrackets(fruitType),
+		JapaneseName: processCategoryString(japaneseName),
+		EnglishName:  processFruitEnglishName(englishName),
+		Meaning:      processCategoryString(meaning),
+		UsageDebut:   processCategoryString(usageDebut),
+		Type:         processCategoryString(fruitType),
 
-		PreviousOwner: utils.RemoveTextWithBrackets(previousOwner),
-		CurrentOwner:  utils.RemoveTextWithBrackets(currentUser),
-		Description:   utils.RemoveTextWithBrackets(description),
+		PreviousOwner: processCategoryString(previousOwner),
+		CurrentOwner:  processCategoryString(currentUser),
+		Description:   processCategoryString(description),
 		AvatarSrc:     avatarSrc,
 	}
 	resultChan <- devilFruit

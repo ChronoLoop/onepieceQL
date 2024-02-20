@@ -73,7 +73,7 @@ func seedCharacters() {
 	}
 
 	fmt.Println("Finished seeding characters")
-	saveCSVFile(&characters, csvPath)
+	utils.SaveCSVFile(&characters, csvPath)
 }
 
 func seedDevilFruits() {
@@ -127,26 +127,8 @@ func seedDevilFruits() {
 		}
 	}
 
-	saveCSVFile(&devilFruits, csvPath)
+	utils.SaveCSVFile(&devilFruits, csvPath)
 	fmt.Println("Finished seeding devil fruits")
-}
-
-func saveCSVFile(in interface{}, csvPath string) {
-	tempFilePath := "./data/temp.csv"
-	tempFile, err := os.Create(tempFilePath)
-	if err != nil {
-		fmt.Println("Error creating temporary file:", err)
-		return
-	}
-	defer tempFile.Close()
-	if err := gocsv.MarshalFile(in, tempFile); err != nil {
-		panic(err)
-	}
-	err = os.Rename(tempFilePath, csvPath)
-	if err != nil {
-		fmt.Println("Error replacing the original file:", err)
-		return
-	}
 }
 
 func saveDevilFruit(wg *sync.WaitGroup, devilFruit *csvmodels.DevilFruitCSV) {

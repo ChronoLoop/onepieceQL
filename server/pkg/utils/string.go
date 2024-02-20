@@ -22,3 +22,24 @@ func RemoveTextWithBrackets(s string) string {
 	output := re.ReplaceAllString(s, "")
 	return output
 }
+
+func RemoveNewLine(s string) string {
+	pattern := `\n`
+	re := regexp.MustCompile(pattern)
+	output := re.ReplaceAllString(s, " ")
+	return output
+}
+
+func RemoveExtraSpaces(s string) string {
+	pattern := `\s\s+`
+	re := regexp.MustCompile(pattern)
+	output := re.ReplaceAllString(s, " ")
+	return output
+}
+
+func RemoveAfterFirstFruit(s string) string {
+	pattern := `^(.*?)Fruit.*`
+	re := regexp.MustCompile(pattern)
+	output := re.ReplaceAllString(s, "${1}Fruit")
+	return output
+}

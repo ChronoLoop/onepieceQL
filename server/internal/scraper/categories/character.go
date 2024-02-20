@@ -149,17 +149,17 @@ func getCharacterFromPage(browser *rod.Browser, pageLink string, wg *sync.WaitGr
 	})
 
 	character := csvmodels.CharacterCSV{
-		JapaneseName:   utils.RemoveTextWithBrackets(japaneseName),
-		EnglishName:    utils.RemoveTextWithBrackets(englishName),
-		Debut:          utils.RemoveTextWithBrackets(debut),
-		Affiliations:   utils.RemoveTextWithBrackets(affiliations),
-		Origin:         utils.RemoveTextWithBrackets(origin),
-		Age:            utils.RemoveTextWithBrackets(age),
-		Birthday:       utils.RemoveTextWithBrackets(birthday),
-		BloodType:      utils.RemoveTextWithBrackets(bloodtype),
-		Bounty:         utils.RemoveTextWithBrackets(bounty),
-		Description:    utils.RemoveTextWithBrackets(description),
-		DevilFruitName: utils.RemoveTextWithBrackets(devilFruitName),
+		JapaneseName:   processCategoryString(japaneseName),
+		EnglishName:    processCategoryString(englishName),
+		Debut:          processCategoryString(debut),
+		Affiliations:   processCategoryString(affiliations),
+		Origin:         processCategoryString(origin),
+		Age:            processCategoryString(age),
+		Birthday:       processCategoryString(birthday),
+		BloodType:      processCategoryString(bloodtype),
+		Bounty:         processCategoryString(bounty),
+		Description:    processCategoryString(description),
+		DevilFruitName: processCategoryString(devilFruitName),
 		AvatarSrc:      avatarSrc,
 	}
 	resultChan <- character

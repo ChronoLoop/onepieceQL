@@ -85,7 +85,7 @@ func populateFindCharactersArgs(args map[string]interface{}) models.FindCharacte
 		input.JapaneseName = name
 	}
 
-	if affiliation, ok := filter["affiliation"].(string); ok {
+	if affiliation, ok := filter["affiliations"].(string); ok {
 		input.Affiliations = affiliation
 	}
 

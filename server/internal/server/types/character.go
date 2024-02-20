@@ -10,7 +10,7 @@ var CharacterFilterInputType = graphql.NewInputObject(graphql.InputObjectConfig{
 		"name": &graphql.InputObjectFieldConfig{
 			Type: graphql.String,
 		},
-		"affiliation": &graphql.InputObjectFieldConfig{
+		"affiliations": &graphql.InputObjectFieldConfig{
 			Type: graphql.String,
 		},
 		"origin": &graphql.InputObjectFieldConfig{

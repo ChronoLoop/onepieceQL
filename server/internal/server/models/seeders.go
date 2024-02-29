@@ -157,14 +157,14 @@ func uploadAvatarSrcToS3(avatarSrc string) (string, error) {
 
 	resp, err := http.Get(avatarSrc)
 	if err != nil {
-		errStr := fmt.Sprintf("failed to fetch: %s\n error: %s", avatarSrc, err.Error())
+		errStr := fmt.Sprintf("failed to fetch: %s\n error: %s\n", avatarSrc, err.Error())
 		return "", errors.New(errStr)
 	}
 	defer resp.Body.Close()
 
 	filename, err := extractImageName(avatarSrc)
 	if err != nil {
-		errStr := fmt.Sprintf("could not extract file name from avatarSrc: %s", err.Error())
+		errStr := fmt.Sprintf("could not extract file name from avatarSrc: %s\n", err.Error())
 		return "", errors.New(errStr)
 	}
 

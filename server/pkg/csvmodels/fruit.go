@@ -10,4 +10,5 @@ type DevilFruitCSV struct {
 	CurrentOwner  string `db:"current_owner" csv:"current_owner" json:"currentOwner"`
 	Description   string `db:"description" csv:"description" json:"description"`
 	AvatarSrc     string `db:"avatar_src" csv:"avatar_src" json:"avatarSrc"`
+	URL           string `csv:"url" json:"url"`
 }

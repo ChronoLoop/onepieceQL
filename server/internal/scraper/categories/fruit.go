@@ -94,8 +94,8 @@ func getDevilFruitFromPage(browser *rod.Browser, pageLink string, wg *sync.WaitG
 	})
 	fruitType := asideElement.MustElementR("section h3", "/type:/i").MustNext().MustText()
 	description := "N/A"
-	for i := 0; i < 5; i++ {
-		selector := "body > div > p:nth-child(" + strconv.Itoa(i+4) + ")"
+	for i := 1; i < 6; i++ {
+		selector := "body > div > p:nth-of-type(" + strconv.Itoa(i) + ")"
 		rod.Try(func() {
 			if descriptionParagraphElement := page.Timeout(2 * time.Second).MustElement(selector); descriptionParagraphElement != nil {
 				description = descriptionParagraphElement.MustText()
@@ -104,6 +104,28 @@ func getDevilFruitFromPage(browser *rod.Browser, pageLink string, wg *sync.WaitG
 		if description != "N/A" && description != "" {
 			break
 		}
+	}
+	if description == "" || description == "N/A" {
+		rod.Try(func() {
+
+			descriptionStr := page.Timeout(2 * time.Second).MustEval(`()=>{
+                const aside = document.querySelector('body > div > aside');
+
+                const endParagraph = document.querySelector('body > div> p:nth-of-type(2)');
+
+                let description = "";
+                let currentElement = aside.nextSibling;
+
+                while (currentElement && currentElement !== endParagraph) {
+                    description += currentElement.textContent
+                    currentElement = currentElement.nextSibling;
+                }
+                return description
+            }`).Str()
+			if descriptionStr != "" {
+				description = descriptionStr
+			}
+		})
 	}
 
 	if description == "" {
@@ -128,6 +150,7 @@ func getDevilFruitFromPage(browser *rod.Browser, pageLink string, wg *sync.WaitG
 		CurrentOwner:  processCategoryString(currentUser),
 		Description:   processCategoryString(description),
 		AvatarSrc:     avatarSrc,
+		URL:           pageLink,
 	}
 	resultChan <- devilFruit
 }

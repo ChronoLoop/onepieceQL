@@ -13,4 +13,5 @@ type CharacterCSV struct {
 	Description    string `db:"description" csv:"description" json:"description"`
 	DevilFruitName string `db:"devil_fruit_name" csv:"devil_fruit_name" json:"devilFruitName"`
 	AvatarSrc      string `db:"avatar_src" csv:"avatar_src" json:"avatarSrc"`
+	URL            string `csv:"url" json:"url"`
 }

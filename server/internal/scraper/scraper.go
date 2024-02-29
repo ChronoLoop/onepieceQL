@@ -10,8 +10,8 @@ func processCategoryString(s string) string {
 }
 
 func LoadAll() {
-	// categories.LoadFruits()
-	// categories.LoadCharacters()
-	categories.CleanUpFruits()
-	categories.CleanUpCharacters()
+	categories.LoadFruits()
+	categories.LoadCharacters()
+	// categories.CleanUpFruits()
+	// categories.CleanUpCharacters()
 }

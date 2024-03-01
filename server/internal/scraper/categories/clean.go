@@ -153,7 +153,7 @@ func CheckFruits() {
 	}
 
 	for _, devilFruit := range devilFruits {
-		if devilFruit.URL == "" || devilFruit.AvatarSrc == "" {
+		if devilFruit.EnglishName == "N/A" || devilFruit.AvatarSrc == "" {
 			utils.PrintStruct(devilFruit)
 		}
 	}

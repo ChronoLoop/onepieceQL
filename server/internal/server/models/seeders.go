@@ -141,6 +141,20 @@ func saveDevilFruit(wg *sync.WaitGroup, devilFruit *csvmodels.DevilFruitCSV) {
 	devilFruit.AvatarSrc = createS3AvatarSrcString(filename)
 }
 
+func deleteFile(wg *sync.WaitGroup, key string) {
+	defer wg.Done()
+	AWS_S3_BUCKET := os.Getenv("AWS_S3_BUCKET_NAME")
+
+	_, err := awsclient.S3Client.DeleteObject(context.TODO(), &s3.DeleteObjectInput{
+		Bucket: aws.String(AWS_S3_BUCKET),
+		Key:    aws.String(key),
+	})
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+}
+
 func saveCharacter(wg *sync.WaitGroup, character *csvmodels.CharacterCSV) {
 	defer wg.Done()
 
@@ -167,6 +181,7 @@ func uploadAvatarSrcToS3(avatarSrc string) (string, error) {
 		errStr := fmt.Sprintf("could not extract file name from avatarSrc: %s\n", err.Error())
 		return "", errors.New(errStr)
 	}
+	filename = utils.RemovePercent(filename)
 
 	filename = filename + ".jpg"
 

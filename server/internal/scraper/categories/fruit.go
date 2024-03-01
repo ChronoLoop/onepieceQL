@@ -192,4 +192,5 @@ func LoadFruits() {
 	devilFruitLinks := getDevilFruitLinks()
 	devilFruits := getDevilFruitsFromLinks(devilFruitLinks)
 	createDevilFruitCsv(devilFruits)
+	CheckFruits()
 }

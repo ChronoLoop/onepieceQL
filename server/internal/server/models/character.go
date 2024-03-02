@@ -104,7 +104,7 @@ const countCharactersQuery = `
 	(($1 = '' OR english_name ILIKE '%' || $1 || '%') OR ($2 = '' OR japanese_name ILIKE '%' || $2 || '%'))
 	AND ($3 = '' OR affiliations ILIKE '%' || $3 || '%')
 	AND ($4 = '' OR origin ILIKE '%' || $4 || '%')
-	AND ($5 = '' OR blood_type ILIKE '%' || $5 || '%')
+	AND ($5 = '' OR blood_type = $5)
 	AND ($6 = '' OR birthday ILIKE '%' || $6 || '%')
 	AND ($7 = '' OR devil_fruit_name ILIKE '%' || $7 || '%')
 `
@@ -126,7 +126,7 @@ const findCharactersQuery = `
 	(($1 = '' OR english_name ILIKE '%' || $1 || '%') OR ($2 = '' OR japanese_name ILIKE '%' || $2 || '%'))
 	AND ($3 = '' OR affiliations ILIKE '%' || $3 || '%')
 	AND ($4 = '' OR origin ILIKE '%' || $4 || '%')
-	AND ($5 = '' OR blood_type ILIKE '%' || $5 || '%')
+	AND ($5 = '' OR blood_type = $5)
 	AND ($6 = '' OR birthday ILIKE '%' || $6 || '%')
 	AND ($7 = '' OR devil_fruit_name ILIKE '%' || $7 || '%')
 	ORDER BY english_name ASC

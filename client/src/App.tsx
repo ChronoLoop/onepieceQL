@@ -1,44 +1,8 @@
-import { createClient, cacheExchange, fetchExchange } from '@urql/core';
-import { ParentComponent, createResource } from 'solid-js';
+import { ParentComponent } from 'solid-js';
 import { Router, Route } from '@solidjs/router';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
-
-const client = createClient({
-    url: '/graphql',
-    exchanges: [cacheExchange, fetchExchange],
-});
-
-const DEVIL_FRUIT_QUERY = `
-    query ExampleQuery($page: Int) {
-      devilFruits(page: $page) {
-        results {
-          avatarSrc
-          currentOwner
-          description
-          englishName
-          id
-          japaneseName
-          meaning
-          previousOwner
-          type
-          usageDebut
-        }
-        info {
-          count
-          next
-          pages
-          prev
-        }
-      }
-    }
-`;
-// const devilFruits = createResource(() =>
-//     client
-//         .query(DEVIL_FRUIT_QUERY, { page: 1 })
-//         .toPromise()
-//         .then(({ data }) => console.log(data))
-// );
+import Explore from './pages/Explore';
 
 const PageWrapper: ParentComponent = (props) => {
     return (
@@ -54,6 +18,7 @@ const App: ParentComponent = () => {
         <>
             <Router root={PageWrapper}>
                 <Route path="/" component={Home} />
+                <Route path="/explore" component={Explore} />
             </Router>
         </>
     );

@@ -5,13 +5,11 @@ import DevilFruitDoc from '../components/documentation/DevilFruitDoc';
 
 const Home = () => {
     return (
-        <>
-            <DocumentationWrapper>
-                <IntroductionDoc />
-                <CharacterDoc />
-                <DevilFruitDoc />
-            </DocumentationWrapper>
-        </>
+        <DocumentationWrapper>
+            <IntroductionDoc />
+            <CharacterDoc />
+            <DevilFruitDoc />
+        </DocumentationWrapper>
     );
 };
 

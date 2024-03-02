@@ -1,5 +1,6 @@
 import { For, ParentComponent, createSignal } from 'solid-js';
-import Sidebar from './Sidebar';
+import DocSidebar from './DocSidebar';
+import MainContentWrapper from '../MainContentWrapper';
 
 export const DocStrong: ParentComponent = (props) => {
     return <strong class="font-bold">{props.children}</strong>;
@@ -88,12 +89,10 @@ export const DocumentationWrapper: ParentComponent = (props) => {
 
     return (
         <>
-            <Sidebar isOpen={isOpen()} setIsOpen={setIsOpen} />
-            <article class="break-words" classList={{ ['lg:ml-60']: isOpen() }}>
-                <div class="px-20 max-lg:px-12 pt-4 pb-64 max-w-7xl mx-auto">
-                    {props.children}
-                </div>
-            </article>
+            <DocSidebar isOpen={isOpen()} setIsOpen={setIsOpen} />
+            <MainContentWrapper sidebarOpen={isOpen()}>
+                {props.children}
+            </MainContentWrapper>
         </>
     );
 };

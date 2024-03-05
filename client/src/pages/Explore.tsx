@@ -1,178 +1,195 @@
 import MainContentWrapper from '../components/MainContentWrapper';
-import Sidebar, { SidebarHeader, SidebarItem } from '../components/Sidebar';
 import {
     For,
-    ParentComponent,
-    Setter,
+    Match,
     Show,
+    Suspense,
+    Switch,
     createEffect,
     createResource,
     createSignal,
     onCleanup,
 } from 'solid-js';
-import { SetStoreFunction, createStore } from 'solid-js/store';
+import { createStore } from 'solid-js/store';
 import { CharacterArgs, getCharacters } from '../services/characters';
-import Input from '../components/Input';
-import { createIntersectionObserver } from '../utils/observer';
 import CharacterCard from '../components/CharacterCard';
-import Spinner from '../components/Spinner';
+import {
+    ExploreLoadSpinner,
+    ExploreLoadNextButton,
+    ExploreSidebar,
+} from '../components/explore';
+import { DevilFruitArgs, getDevilFruits } from '../services/fruits';
+import { Category } from '../constants/category';
+import DevilFruitCard from '../components/DevilFruitCard';
 
-const ORIGINS = [
-    'North Blue',
-    'East Blue',
-    'South Blue',
-    'West Blue',
-    'Red Line',
-    'Calm Belt',
-    'Grand Line',
-    'New World',
-];
-
-const MONTHS = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
-];
-
-const BLOOD_TYPES = ['X', 'S', 'XF', 'F'];
-
-const ExploreSidebarSection: ParentComponent = (props) => {
-    return <li class="flex flex-col gap-2">{props.children}</li>;
+type ExploreInitialDevilFruitsProps = {
+    filter: DevilFruitArgs['filter'];
 };
 
-const ExploreSidebarSubSection: ParentComponent = (props) => {
-    return <ul class="flex flex-col gap-1">{props.children}</ul>;
-};
+const ExploreInitialDevilFruits = (props: ExploreInitialDevilFruitsProps) => {
+    const [debouncedFilter, setDebouncedFilter] = createStore<
+        DevilFruitArgs['filter']
+    >({
+        name: props.filter.name,
+        type: props.filter.type,
+        previousOwner: props.filter.previousOwner,
+        currentOwner: props.filter.currentOwner,
+    });
 
-const ExploreLoadCharactersSpinner = () => {
+    createEffect(() => {
+        const { name, type, currentOwner, previousOwner } = props.filter;
+
+        const timeoutId = setTimeout(() => {
+            setDebouncedFilter({
+                name,
+                type,
+                currentOwner,
+                previousOwner,
+            });
+        }, 300);
+
+        onCleanup(() => {
+            if (timeoutId) clearTimeout(timeoutId);
+        });
+    });
+
+    const [devilFruitsData] = createResource(
+        () => ({
+            filter: {
+                name: debouncedFilter.name,
+                type: debouncedFilter.type,
+                previousOwner: debouncedFilter.previousOwner,
+                currentOwner: debouncedFilter.currentOwner,
+            },
+        }),
+        (args) => {
+            return getDevilFruits({ page: 1, filter: args.filter });
+        }
+    );
     return (
-        <div class="flex justify-center mt-3 col-span-full">
-            <Spinner />
-        </div>
+        <>
+            <For each={devilFruitsData()?.results}>
+                {(devilFruit) => <DevilFruitCard devilFruit={devilFruit} />}
+            </For>
+            <Show when={devilFruitsData()?.info.next}>
+                {(nextPage) => (
+                    <LoadNextDevilFruits
+                        nextPage={nextPage()}
+                        filter={props.filter}
+                    />
+                )}
+            </Show>
+        </>
     );
 };
 
-type ExploreSidebarListMenuProps = {
-    header: string;
-    items: string[];
-    selectedItem?: string;
-    onItemClick: (item: string | undefined) => void;
+type LoadNextDevilFruitsProps = {
+    filter: DevilFruitArgs['filter'];
+    nextPage: number;
 };
-const ExploreSidebarListMenu = (props: ExploreSidebarListMenuProps) => {
+const LoadNextDevilFruits = (props: LoadNextDevilFruitsProps) => {
+    const [loadNext, setLoadNext] = createSignal(false);
+    const [devilFruitsData] = createResource(
+        () => ({
+            filter: {
+                name: props.filter.name,
+                type: props.filter.type,
+                previousOwner: props.filter.previousOwner,
+                currentOwner: props.filter.currentOwner,
+            },
+            loadNext: loadNext(),
+        }),
+        (args) => {
+            return getDevilFruits(
+                { page: props.nextPage, filter: args.filter },
+                args.loadNext ? 'cache-first' : 'cache-only'
+            );
+        }
+    );
+
     return (
-        <ExploreSidebarSection>
-            <SidebarHeader>{props.header}</SidebarHeader>
-            <ExploreSidebarSubSection>
-                <SidebarItem
-                    onClick={() => props.onItemClick(undefined)}
-                    selected={props.selectedItem == undefined}
-                >
-                    None
-                </SidebarItem>
-                <For each={props.items}>
-                    {(item) => (
-                        <SidebarItem
-                            onClick={() => props.onItemClick(item)}
-                            selected={props.selectedItem === item}
-                        >
-                            {item}
-                        </SidebarItem>
-                    )}
+        <Show
+            when={loadNext()}
+            fallback={
+                <ExploreLoadNextButton onLoadNext={() => setLoadNext(true)} />
+            }
+        >
+            <Show
+                when={!devilFruitsData.loading}
+                fallback={<ExploreLoadSpinner />}
+            >
+                <For each={devilFruitsData()?.results}>
+                    {(devilFruit) => <DevilFruitCard devilFruit={devilFruit} />}
                 </For>
-            </ExploreSidebarSubSection>
-        </ExploreSidebarSection>
+                <Show when={devilFruitsData()?.info.next}>
+                    {(nextPage) => (
+                        <LoadNextDevilFruits
+                            nextPage={nextPage()}
+                            filter={props.filter}
+                        />
+                    )}
+                </Show>
+            </Show>
+        </Show>
     );
 };
 
-type ExploreSidebarProps = {
-    isOpen: boolean;
-    setIsOpen: Setter<boolean>;
-    setFilter: SetStoreFunction<CharacterArgs['filter']>;
+type ExploreInitialCharactersProps = {
     filter: CharacterArgs['filter'];
 };
 
-const ExploreSidebar = (props: ExploreSidebarProps) => {
-    let timeoutId: NodeJS.Timeout | null = null;
-    function onInputChange(val: string) {
-        if (timeoutId) clearTimeout(timeoutId);
-
-        timeoutId = setTimeout(() => props.setFilter('name', val), 500);
-    }
-    onCleanup(() => {
-        if (timeoutId) clearTimeout(timeoutId);
+const ExploreInitialCharacters = (props: ExploreInitialCharactersProps) => {
+    const [debouncedFilter, setDebouncedFilter] = createStore({
+        name: props.filter.name,
+        origin: props.filter.origin,
+        bloodType: props.filter.bloodType,
+        birthday: props.filter.birthday,
     });
-    return (
-        <Sidebar isOpen={props.isOpen} setIsOpen={props.setIsOpen}>
-            <ExploreSidebarSection>
-                <SidebarHeader>Name</SidebarHeader>
-                <Input
-                    type="text"
-                    placeholder="ex: Sanji"
-                    name="name"
-                    id="name"
-                    onInput={(e) => onInputChange(e.target.value)}
-                    value={props.filter.name}
-                />
-            </ExploreSidebarSection>
-            <ExploreSidebarListMenu
-                header="Origin"
-                items={ORIGINS}
-                selectedItem={props.filter.origin}
-                onItemClick={(origin) => props.setFilter('origin', origin)}
-            />
-            <ExploreSidebarListMenu
-                header="Birth Month"
-                items={MONTHS}
-                selectedItem={props.filter.birthday}
-                onItemClick={(month) => props.setFilter('birthday', month)}
-            />
-            <ExploreSidebarListMenu
-                header="Blood Type"
-                items={BLOOD_TYPES}
-                selectedItem={props.filter.bloodType}
-                onItemClick={(bloodType) =>
-                    props.setFilter('bloodType', bloodType)
-                }
-            />
-        </Sidebar>
-    );
-};
-
-type LoadNextCharactersButtonProps = {
-    onLoadNext: () => void;
-};
-
-const LoadNextCharactersButton = (props: LoadNextCharactersButtonProps) => {
-    let buttonRef: HTMLButtonElement | undefined;
 
     createEffect(() => {
-        if (!buttonRef) return;
+        const { name, origin, bloodType, birthday } = props.filter;
 
-        const observer = createIntersectionObserver({
-            rootMargin: '400px',
-            onIntersect: props.onLoadNext,
-        });
-        observer.observe(buttonRef);
+        const timeoutId = setTimeout(() => {
+            setDebouncedFilter({
+                name,
+                origin,
+                bloodType,
+                birthday,
+            });
+        }, 300);
 
         onCleanup(() => {
-            if (buttonRef) observer.unobserve(buttonRef);
-            observer.disconnect();
+            if (timeoutId) clearTimeout(timeoutId);
         });
     });
 
+    const [characterData] = createResource(
+        () => ({
+            filter: {
+                name: debouncedFilter.name,
+                origin: debouncedFilter.origin,
+                bloodType: debouncedFilter.bloodType,
+                birthday: debouncedFilter.birthday,
+            },
+        }),
+        (args) => {
+            return getCharacters({ page: 1, filter: args.filter });
+        }
+    );
     return (
-        <button class="invisible" ref={buttonRef} disabled>
-            Loading more...
-        </button>
+        <>
+            <For each={characterData()?.results}>
+                {(character) => <CharacterCard character={character} />}
+            </For>
+            <Show when={characterData()?.info.next}>
+                {(nextPage) => (
+                    <LoadNextCharacters
+                        nextPage={nextPage()}
+                        filter={props.filter}
+                    />
+                )}
+            </Show>
+        </>
     );
 };
 
@@ -204,14 +221,12 @@ const LoadNextCharacters = (props: LoadNextCharactersProps) => {
         <Show
             when={loadNext()}
             fallback={
-                <LoadNextCharactersButton
-                    onLoadNext={() => setLoadNext(true)}
-                />
+                <ExploreLoadNextButton onLoadNext={() => setLoadNext(true)} />
             }
         >
             <Show
                 when={!characterData.loading}
-                fallback={<ExploreLoadCharactersSpinner />}
+                fallback={<ExploreLoadSpinner />}
             >
                 <For each={characterData()?.results}>
                     {(character) => <CharacterCard character={character} />}
@@ -229,61 +244,50 @@ const LoadNextCharacters = (props: LoadNextCharactersProps) => {
     );
 };
 
-type ExploreInitialCharactersProps = {
-    filter: CharacterArgs['filter'];
-};
-
-const ExploreInitialCharacters = (props: ExploreInitialCharactersProps) => {
-    const [characterData] = createResource(
-        () => ({
-            filter: {
-                name: props.filter.name,
-                origin: props.filter.origin,
-                bloodType: props.filter.bloodType,
-                birthday: props.filter.birthday,
-            },
-        }),
-        (args) => {
-            return getCharacters({ page: 1, filter: args.filter });
-        }
-    );
-    return (
-        <Show
-            when={!characterData.loading}
-            fallback={<ExploreLoadCharactersSpinner />}
-        >
-            <For each={characterData()?.results}>
-                {(character) => <CharacterCard character={character} />}
-            </For>
-            <Show when={characterData()?.info.next}>
-                {(nextPage) => (
-                    <LoadNextCharacters
-                        nextPage={nextPage()}
-                        filter={props.filter}
-                    />
-                )}
-            </Show>
-        </Show>
-    );
-};
-
 const Explore = () => {
     const [isOpen, setIsOpen] = createSignal(true);
-    const [filter, setFilter] = createStore<CharacterArgs['filter']>({
+    const [category, setCategory] = createSignal<Category>('Character');
+    const [characterFilter, setCharacterFilter] = createStore<
+        CharacterArgs['filter']
+    >({
+        name: '',
+    });
+    const [devilFruitFilter, setDevilFruitFilter] = createStore<
+        DevilFruitArgs['filter']
+    >({
         name: '',
     });
 
     return (
         <>
             <ExploreSidebar
+                setCategory={setCategory}
                 isOpen={isOpen()}
                 setIsOpen={setIsOpen}
-                filter={filter}
-                setFilter={setFilter}
+                characterFilter={characterFilter}
+                setCharacterFilter={setCharacterFilter}
+                category={category}
+                devilFruitFilter={devilFruitFilter}
+                setDevilFruitFilter={setDevilFruitFilter}
             />
             <MainContentWrapper sidebarOpen={isOpen()}>
                 <div class="grid grid-cols-[repeat(auto-fit,_minmax(20rem,_1fr))] auto-rows-auto gap-4">
-                    <ExploreInitialCharacters filter={filter} />
+                    <Switch>
+                        <Match when={category() === 'Character'}>
+                            <Suspense fallback={<ExploreLoadSpinner />}>
+                                <ExploreInitialCharacters
+                                    filter={characterFilter}
+                                />
+                            </Suspense>
+                        </Match>
+                        <Match when={category() === 'Devil Fruit'}>
+                            <Suspense fallback={<ExploreLoadSpinner />}>
+                                <ExploreInitialDevilFruits
+                                    filter={devilFruitFilter}
+                                />
+                            </Suspense>
+                        </Match>
+                    </Switch>
                 </div>
             </MainContentWrapper>
         </>

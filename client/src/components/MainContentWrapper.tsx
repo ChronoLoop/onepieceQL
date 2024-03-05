@@ -12,7 +12,7 @@ const MainContentWrapper: ParentComponent<MainContentWrapperProps> = (
             class="break-words"
             classList={{ ['lg:ml-60']: props.sidebarOpen }}
         >
-            <div class="px-20 max-lg:px-12 pt-4 pb-64 max-w-7xl mx-auto">
+            <div class="px-20 max-lg:px-14 pt-4 pb-64 max-w-7xl mx-auto">
                 {props.children}
             </div>
         </article>

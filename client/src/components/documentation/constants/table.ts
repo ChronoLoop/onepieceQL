@@ -1,4 +1,4 @@
-import { DocTableDataHeader } from '../components/documentation/Documentation';
+import { DocTableDataHeader } from '../Documentation';
 
 export const DEFAULT_TABLE_SCHEMA_HEADERS: DocTableDataHeader[] = [
     { key: 'Field' },

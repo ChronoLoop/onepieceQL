@@ -1,14 +1,6 @@
-import {
-    createClient,
-    cacheExchange,
-    fetchExchange,
-    RequestPolicy,
-} from '@urql/core';
-
-const client = createClient({
-    url: '/graphql',
-    exchanges: [cacheExchange, fetchExchange],
-});
+import { RequestPolicy } from '@urql/core';
+import { client } from './client';
+import { InfoField } from './pagination';
 
 const CHARACTERS_QUERY = `
     query ($page: Int, $filter: characterFilter) {
@@ -55,13 +47,6 @@ export type Character = {
 };
 
 type CharactersResultField = Character[];
-
-type InfoField = {
-    count: number;
-    pages: number;
-    prev: number | null;
-    next: number | null;
-};
 
 type getCharactersData = {
     characters: {

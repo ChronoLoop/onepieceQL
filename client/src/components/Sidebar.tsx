@@ -161,14 +161,17 @@ const Sidebar: ParentComponent<SidebarProps> = (props) => {
                 </button>
             }
         >
-            <nav class="fixed z-50 top-12 left-0 w-60 shrink-0 h-full pl-6 p-9 border-r border-solid border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-900 max-lg:w-full overflow-y-auto">
-                <ul class="flex flex-col gap-7">{props.children}</ul>
-                <button
-                    onClick={toggle}
-                    class="absolute top-1 right-1 flex justify-center items-center w-10 h-10 rounded-full hover:bg-gray-600/50"
-                >
-                    <CgClose class="w-5 h-5" />
-                </button>
+            {/* pl-6 p-9 */}
+            <nav class="fixed z-40 top-0 left-0 w-60 shrink-0 h-full border-r pt-12 border-solid border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-900 max-lg:w-full ">
+                <div class="relative h-full w-full pl-6 p-9 overflow-y-auto">
+                    <ul class="flex flex-col gap-7">{props.children}</ul>
+                    <button
+                        onClick={toggle}
+                        class="absolute top-1 right-1 flex justify-center items-center w-10 h-10 rounded-full hover:bg-gray-600/50"
+                    >
+                        <CgClose class="w-5 h-5" />
+                    </button>
+                </div>
             </nav>
         </Show>
     );

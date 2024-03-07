@@ -3,7 +3,16 @@ package server
 import (
 	"net/http"
 	"os"
+	"path"
+	"path/filepath"
+	"strings"
 
+	"time"
+
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
+	"github.com/go-chi/cors"
+	"github.com/go-chi/httprate"
 	"github.com/graphql-go/graphql"
 	"github.com/graphql-go/handler"
 	"github.com/ikevinws/onepieceQL/internal/server/awsclient"
@@ -33,9 +42,27 @@ func generatePlaygroundHTML() []byte {
 	return []byte(html)
 }
 
+func getExePath() string {
+	ex, err := os.Executable()
+
+	if err != nil {
+		panic(err)
+	}
+	exPath := filepath.Dir(ex)
+
+	//air runs executable in tmp
+	if path.Base(exPath) == "tmp" {
+		exPath = filepath.Join(exPath, "../")
+	}
+
+	return exPath
+}
+
 func StartServer() {
-	godotenv.Load("../.env")
+	exPath := getExePath()
+	godotenv.Load(filepath.Join(exPath, "../.env"))
 	db.Initialize()
+
 	awsclient.ConfigS3()
 	models.SeedDatabase()
 
@@ -50,14 +77,41 @@ func StartServer() {
 		panic(err)
 	}
 
-	httpHandler := handler.New(&handler.Config{
+	httpGraphQLHandler := handler.New(&handler.Config{
 		Schema: &schema,
 		Pretty: true,
 	})
 
-	http.Handle("/graphql", httpHandler)
-	http.Handle("/playground", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	r := chi.NewRouter()
+
+	r.Use(cors.Handler(cors.Options{
+		AllowedOrigins:   []string{"https://onepieceql.up.railway.app"},
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
+		ExposedHeaders:   []string{"Link"},
+		AllowCredentials: true,
+	}))
+
+	r.Use(middleware.Logger)
+	r.Use(httprate.LimitAll(250, time.Minute))
+
+	r.Handle("/graphql", httpGraphQLHandler)
+	r.Handle("/playground", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Write(generatePlaygroundHTML())
 	}))
-	http.ListenAndServe(":"+os.Getenv("PORT"), nil)
+
+	// // Serve index.html for all other routes
+	r.Get("/*", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		filePath := r.URL.Path
+		if strings.HasPrefix(filePath, "/assets/") {
+			w.Header().Set("Cache-Control", "public, max-age=31536000")
+			staticDir := http.Dir(filepath.Join(exPath, "../client/dist"))
+			http.FileServer(staticDir).ServeHTTP(w, r)
+		} else {
+			w.Header().Set("Cache-Control", "no-cache")
+			http.ServeFile(w, r, filepath.Join(exPath, "../client/dist/index.html"))
+		}
+	}))
+
+	http.ListenAndServe(":"+os.Getenv("PORT"), r)
 }

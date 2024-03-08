@@ -155,7 +155,7 @@ const Sidebar: ParentComponent<SidebarProps> = (props) => {
             fallback={
                 <button
                     onClick={toggle}
-                    class="fixed z-50 top-14 left-2 flex justify-center items-center w-10 h-10 rounded-full hover:bg-gray-600/50"
+                    class="fixed z-50 top-14 left-2 flex justify-center items-center w-10 h-10 rounded-full hover:bg-gray-500/25 dark:hover:bg-gray-600/50"
                 >
                     <FaSolidAnglesRight class="w-5 h-5" />
                 </button>
@@ -167,7 +167,7 @@ const Sidebar: ParentComponent<SidebarProps> = (props) => {
                     <ul class="flex flex-col gap-7">{props.children}</ul>
                     <button
                         onClick={toggle}
-                        class="absolute top-1 right-1 flex justify-center items-center w-10 h-10 rounded-full hover:bg-gray-600/50"
+                        class="absolute top-1 right-1 flex justify-center items-center w-10 h-10 rounded-full hover:bg-gray-500/25 dark:hover:bg-gray-600/50"
                     >
                         <CgClose class="w-5 h-5" />
                     </button>

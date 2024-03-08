@@ -1,4 +1,4 @@
-FROM node:16.20.0 AS clientBuilder
+FROM node:20.11.1 AS clientBuilder
 WORKDIR /app
 
 COPY ./client/. /app
@@ -8,7 +8,7 @@ RUN pnpm run build
 
 
 
-FROM golang:1.21-alpine AS serverBuilder
+FROM golang:1.22.1-alpine AS serverBuilder
 WORKDIR /app
 
 COPY ./server/. /app

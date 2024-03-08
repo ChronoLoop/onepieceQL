@@ -22,24 +22,34 @@ import (
 	"github.com/joho/godotenv"
 )
 
-func generatePlaygroundHTML() []byte {
-	port := os.Getenv("PORT")
+const baseURL = "https://onepieceql.up.railway.app"
+
+func generateHTML(initialEndpoint string) []byte {
 	html := `
-	<!DOCTYPE html>
-	<html lang="en">
-	<body style="margin: 0; overflow-x: hidden; overflow-y: hidden">
-	<div id="sandbox" style="height:100vh; width:100vw;"></div>
-	<script src="https://embeddable-sandbox.cdn.apollographql.com/_latest/embeddable-sandbox.umd.production.min.js"></script>
-	<script>
-	new window.EmbeddedSandbox({
-	  target: "#sandbox",
-	  initialEndpoint: "http://localhost:` + port + `/graphql",
-	});
-	</script>
-	</body>
-	</html>
-`
+            <!DOCTYPE html>
+            <html lang="en">
+            <body style="margin: 0; overflow-x: hidden; overflow-y: hidden">
+            <div id="sandbox" style="height:100vh; width:100vw;"></div>
+            <script src="https://embeddable-sandbox.cdn.apollographql.com/_latest/embeddable-sandbox.umd.production.min.js"></script>
+            <script>
+            new window.EmbeddedSandbox({
+              target: "#sandbox",
+              initialEndpoint: "` + initialEndpoint + `",
+            });
+            </script>
+            </body>
+            </html>
+        `
 	return []byte(html)
+}
+
+func generatePlaygroundHTML() []byte {
+	serverEnv := os.Getenv("SERVER_ENV")
+	if serverEnv == "development" {
+		port := os.Getenv("PORT")
+		return generateHTML("http://localhost:" + port + "/graphql")
+	}
+	return generateHTML(baseURL + "/graphql")
 }
 
 func getExePath() string {
@@ -85,7 +95,7 @@ func StartServer() {
 	r := chi.NewRouter()
 
 	r.Use(cors.Handler(cors.Options{
-		AllowedOrigins:   []string{"https://onepieceql.up.railway.app"},
+		AllowedOrigins:   []string{baseURL},
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
 		ExposedHeaders:   []string{"Link"},

@@ -9,9 +9,9 @@ func processCategoryString(s string) string {
 	return utils.RemoveTextWithBrackets(utils.RemoveNewLine(s))
 }
 
-func LoadAll() {
-	// categories.LoadFruits()
-	categories.LoadCharacters()
+func ScrapeCategories() {
+	categories.ScrapeFruits()
+	categories.ScrapeCharacters()
 	// categories.CleanUpFruits()
 	// categories.CleanUpCharacters()
 }

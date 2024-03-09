@@ -186,7 +186,7 @@ func createDevilFruitCsv(devilFruits []csvmodels.DevilFruitCSV) {
 	}
 }
 
-func LoadFruits() {
+func ScrapeFruits() {
 	fmt.Println("Scraping devil fruits...")
 	defer utils.Timer("Created fruits.csv")()
 	devilFruitLinks := getDevilFruitLinks()

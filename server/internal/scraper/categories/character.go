@@ -251,7 +251,7 @@ func createCharacterCSV(characters []csvmodels.CharacterCSV) {
 	}
 }
 
-func LoadCharacters() {
+func ScrapeCharacters() {
 	fmt.Println("Scraping characters...")
 	defer utils.Timer("Created characters.csv")()
 	characterLinks := getCharacterLinks()

@@ -3,7 +3,6 @@ package server
 import (
 	"net/http"
 	"os"
-	"path"
 	"path/filepath"
 	"strings"
 
@@ -19,6 +18,7 @@ import (
 	"github.com/ikevinws/onepieceQL/internal/server/db"
 	"github.com/ikevinws/onepieceQL/internal/server/models"
 	"github.com/ikevinws/onepieceQL/internal/server/queries"
+	"github.com/ikevinws/onepieceQL/pkg/utils"
 	"github.com/joho/godotenv"
 )
 
@@ -52,24 +52,8 @@ func generatePlaygroundHTML() []byte {
 	return generateHTML(baseURL + "/graphql")
 }
 
-func getExePath() string {
-	ex, err := os.Executable()
-
-	if err != nil {
-		panic(err)
-	}
-	exPath := filepath.Dir(ex)
-
-	//air runs executable in tmp
-	if path.Base(exPath) == "tmp" {
-		exPath = filepath.Join(exPath, "../")
-	}
-
-	return exPath
-}
-
 func StartServer() {
-	exPath := getExePath()
+	exPath := utils.GetExePath()
 	godotenv.Load(filepath.Join(exPath, "../.env"))
 	db.Initialize()
 

@@ -16,8 +16,13 @@ func GetExePath() string {
 
 	//air runs executable in tmp
 	if path.Base(exPath) == "tmp" {
-		exPath = filepath.Join(exPath, "../")
+		return filepath.Join(exPath, "../")
 	}
 
-	return exPath
+	wd, err := os.Getwd()
+
+	if err != nil {
+		panic(err)
+	}
+	return wd
 }

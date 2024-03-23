@@ -39,12 +39,12 @@ const ToggleThemeButton = () => {
         <Show
             when={theme() === THEME_DARK}
             fallback={
-                <button onClick={toggle}>
+                <button onClick={toggle} aria-label="Switch to Light Mode">
                     <BsMoon class="w-6 h-6" />
                 </button>
             }
         >
-            <button onClick={toggle}>
+            <button onClick={toggle} aria-label="Switch to Dark Mode">
                 <BsSunFill class="w-6 h-6" />
             </button>
         </Show>

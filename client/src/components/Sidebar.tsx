@@ -156,6 +156,7 @@ const Sidebar: ParentComponent<SidebarProps> = (props) => {
                 <button
                     onClick={toggle}
                     class="fixed z-50 top-14 left-2 flex justify-center items-center w-10 h-10 rounded-full hover:bg-gray-500/25 dark:hover:bg-gray-600/50"
+                    aria-label="Open Sidebar"
                 >
                     <FaSolidAnglesRight class="w-5 h-5" />
                 </button>
@@ -168,6 +169,7 @@ const Sidebar: ParentComponent<SidebarProps> = (props) => {
                     <button
                         onClick={toggle}
                         class="absolute top-1 right-1 flex justify-center items-center w-10 h-10 rounded-full hover:bg-gray-500/25 dark:hover:bg-gray-600/50"
+                        aria-label="Close Sidebar"
                     >
                         <CgClose class="w-5 h-5" />
                     </button>

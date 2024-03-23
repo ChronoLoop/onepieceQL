@@ -20,13 +20,14 @@ const ContributeDoc = () => {
         <>
             <DocH3 id="contribute">Contribute</DocH3>
             <DocParagraph>
-                Feel free to fork{' '}
+                Feel free to fork the{' '}
                 <A
                     href="https://github.com/ChronoLoop/onepieceQL"
                     target="_blank"
                     class="underline"
+                    aria-label="Github Repository"
                 >
-                    <DocStrong>here</DocStrong>
+                    <DocStrong>repository</DocStrong>
                 </A>{' '}
                 and make improvements.
             </DocParagraph>

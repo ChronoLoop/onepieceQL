@@ -20,8 +20,12 @@ const Navbar = () => {
     return (
         <header class="sticky top-0 bg-white dark:bg-slate-900 border-b border-solid border-gray-300 dark:border-slate-700 h-12 w-full z-50">
             <nav class="flex items-center px-5 h-full">
-                <A href="/" class="mr-auto">
-                    <img src={BrandImage} class="w-10 h-10 object-contain" />
+                <A href="/" class="mr-auto" aria-label="Home">
+                    <img
+                        src={BrandImage}
+                        class="w-10 h-10 object-contain"
+                        alt="One Piece Logo"
+                    />
                 </A>
                 <div class="flex items-center gap-2 font-bold text-lg">
                     <ul class="flex gap-2 mx-2.5 items-center">
@@ -36,7 +40,7 @@ const Navbar = () => {
                         <NavbarListItem>
                             <A
                                 href="/explore"
-                                class="bg-orange-500 rounded text-white px-3 py-0.5 inline-block"
+                                class="bg-orange-700 rounded text-white px-3 py-0.5 inline-block"
                             >
                                 Explore
                             </A>
@@ -50,6 +54,7 @@ const Navbar = () => {
                             <A
                                 href="https://github.com/ChronoLoop/onepieceQL"
                                 target="blank"
+                                aria-label="Github Repository"
                             >
                                 <FaBrandsGithub class="w-6 h-6" />
                             </A>

@@ -94,7 +94,6 @@ func StartServer() {
 		w.Write(generatePlaygroundHTML())
 	}))
 
-	// // Serve index.html for all other routes
 	r.Get("/*", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		filePath := r.URL.Path
 		if strings.HasPrefix(filePath, "/assets/") {
@@ -103,7 +102,10 @@ func StartServer() {
 			http.FileServer(staticDir).ServeHTTP(w, r)
 		} else {
 			w.Header().Set("Cache-Control", "no-cache")
-			http.ServeFile(w, r, filepath.Join(exPath, "../client/dist/index.html"))
+			if filePath == "/" {
+				filePath = filePath + "index.html"
+			}
+			http.ServeFile(w, r, filepath.Join(exPath, "../client/dist/", filePath))
 		}
 	}))
 

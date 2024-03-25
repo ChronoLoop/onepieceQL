@@ -1,8 +1,9 @@
 # OnePieceQL
+![One_Piece_Anime_Logo](https://github.com/ChronoLoop/onepieceQL/assets/44091034/43a9d57d-fbc3-4bff-8516-8f35941e7e44)
 
 ## Introduction
 
-OnePieceQL is a GraphQL API that provides extensive One Piece data.
+OnePieceQL is a GraphQL API that provides extensive One Piece (famous manga and anime series) data.
 
 You can view the live [documentation](https://onepieceql.up.railway.app)
 

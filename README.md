@@ -3,7 +3,7 @@
 
 ## Introduction
 
-OnePieceQL is a GraphQL API that provides extensive data pertaining to the One Piece universe, a popular manga and anime series.
+OnePieceQL is a GraphQL API that provides extensive data about the One Piece universe, a popular manga and anime series.
 
 You can view the live [documentation](https://onepieceql.up.railway.app)
 

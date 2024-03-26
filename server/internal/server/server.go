@@ -102,10 +102,12 @@ func StartServer() {
 			http.FileServer(staticDir).ServeHTTP(w, r)
 		} else {
 			w.Header().Set("Cache-Control", "no-cache")
-			if filePath == "/" {
-				filePath = filePath + "index.html"
+			requestedFile := filepath.Join(exPath, "../client/dist"+filePath)
+			if _, err := os.Stat(requestedFile); err == nil {
+				http.ServeFile(w, r, requestedFile)
+			} else {
+				http.ServeFile(w, r, filepath.Join(exPath, "../client/dist/index.html"))
 			}
-			http.ServeFile(w, r, filepath.Join(exPath, "../client/dist/", filePath))
 		}
 	}))
 

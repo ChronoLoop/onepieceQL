@@ -44,7 +44,7 @@ const ExploreDevilFruitFilter = (props: ExploreDevilFruitFilterProps) => {
                     onInput={(e) =>
                         props.setFilter('previousOwner', e.target.value)
                     }
-                    value={props.filter.name}
+                    value={props.filter.previousOwner}
                 />
             </ExploreSidebarSection>
             <ExploreSidebarSection>
@@ -57,7 +57,7 @@ const ExploreDevilFruitFilter = (props: ExploreDevilFruitFilterProps) => {
                     onInput={(e) =>
                         props.setFilter('currentOwner', e.target.value)
                     }
-                    value={props.filter.name}
+                    value={props.filter.currentOwner}
                 />
             </ExploreSidebarSection>
         </>

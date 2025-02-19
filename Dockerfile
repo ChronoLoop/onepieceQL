@@ -2,7 +2,7 @@ FROM node:20.11.1 AS clientBuilder
 WORKDIR /app
 
 COPY ./client/. /app
-RUN npm i -g pnpm 
+RUN npm i -g pnpm@10.4.1
 RUN pnpm i --frozen-lockfile
 RUN pnpm run build
 

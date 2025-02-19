@@ -51,8 +51,8 @@ func seedCharacters() {
 			continue
 		}
 
-		go saveCharacter(&wg, character)
 		wg.Add(1)
+		go saveCharacter(&wg, character)
 	}
 	wg.Wait()
 
@@ -105,8 +105,8 @@ func seedDevilFruits() {
 			continue
 		}
 
-		go saveDevilFruit(&wg, devilFruit)
 		wg.Add(1)
+		go saveDevilFruit(&wg, devilFruit)
 	}
 	wg.Wait()
 
@@ -138,7 +138,7 @@ func saveDevilFruit(wg *sync.WaitGroup, devilFruit *csvmodels.DevilFruitCSV) {
 		fmt.Println(err.Error())
 		return
 	}
-	devilFruit.AvatarSrc = createS3AvatarSrcString(filename)
+	devilFruit.AvatarSrc = filename
 }
 
 func deleteFile(wg *sync.WaitGroup, key string) {
@@ -163,7 +163,7 @@ func saveCharacter(wg *sync.WaitGroup, character *csvmodels.CharacterCSV) {
 		fmt.Println(err.Error())
 		return
 	}
-	character.AvatarSrc = createS3AvatarSrcString(filename)
+	character.AvatarSrc = filename
 }
 
 func uploadAvatarSrcToS3(avatarSrc string) (string, error) {

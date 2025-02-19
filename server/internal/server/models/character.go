@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/ikevinws/onepieceQL/internal/server/awsclient"
 	"github.com/ikevinws/onepieceQL/internal/server/db"
 	"github.com/ikevinws/onepieceQL/pkg/csvmodels"
 	"github.com/ikevinws/onepieceQL/pkg/utils"
@@ -153,4 +154,23 @@ func FindCharacters(args *FindCharactersArgs, page int) ([]Character, error) {
 		return characters, errors.New("could not find characters")
 	}
 	return characters, nil
+}
+
+func SignCharacterAvatar(character *Character) error {
+	signedURL, error := awsclient.CloudFrontSigner.Sign(
+		awsclient.CLOUDFRONT_DOMAIN_NAME+character.AvatarSrc,
+		time.Now().Add(AVATAR_SRC_EXPIRATION_TIME),
+	)
+	character.AvatarSrc = signedURL
+	return error
+}
+
+func SignCharacterAvatars(characters *[]Character) error {
+	for i := range *characters {
+		error := SignCharacterAvatar(&(*characters)[i])
+		if error != nil {
+			return error
+		}
+	}
+	return nil
 }

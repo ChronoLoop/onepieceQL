@@ -1,10 +1,13 @@
 module github.com/ikevinws/onepieceQL
 
-go 1.21.0
+go 1.22
+
+toolchain go1.22.1
 
 require (
-	github.com/aws/aws-sdk-go-v2 v1.21.2
+	github.com/aws/aws-sdk-go-v2 v1.36.2
 	github.com/aws/aws-sdk-go-v2/config v1.18.45
+	github.com/aws/aws-sdk-go-v2/feature/cloudfront/sign v1.8.10
 	github.com/aws/aws-sdk-go-v2/feature/s3/manager v1.11.90
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.40.2
 	github.com/go-chi/chi/v5 v5.0.12
@@ -35,11 +38,10 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/sso v1.15.2 // indirect
 	github.com/aws/aws-sdk-go-v2/service/ssooidc v1.17.3 // indirect
 	github.com/aws/aws-sdk-go-v2/service/sts v1.23.2 // indirect
-	github.com/aws/smithy-go v1.15.0 // indirect
+	github.com/aws/smithy-go v1.22.2 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20221227161230-091c0ba34f0a // indirect
-	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/ysmood/fetchup v0.2.4 // indirect
 	github.com/ysmood/goob v0.4.0 // indirect
 	github.com/ysmood/got v0.39.4 // indirect

@@ -21,6 +21,12 @@ func GetCharacterQuery() *graphql.Field {
 			if err != nil {
 				return nil, err
 			}
+
+			err = models.SignCharacterAvatar(&character)
+			if err != nil {
+				return nil, err
+			}
+
 			return character, nil
 		},
 	}
@@ -53,6 +59,12 @@ func GetCharactersQuery() *graphql.Field {
 			if err != nil {
 				return nil, err
 			}
+
+			err = models.SignCharacterAvatars(&characters)
+			if err != nil {
+				return nil, err
+			}
+
 			count, err := models.CountCharacters(&findCharactersArgs)
 			if err != nil {
 				return nil, err

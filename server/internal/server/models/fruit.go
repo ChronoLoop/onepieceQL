@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/ikevinws/onepieceQL/internal/server/awsclient"
 	"github.com/ikevinws/onepieceQL/internal/server/db"
 	"github.com/ikevinws/onepieceQL/pkg/csvmodels"
 	"github.com/ikevinws/onepieceQL/pkg/utils"
@@ -138,4 +139,23 @@ func CountDevilFruits(args *FindDevilFruitsArgs) (int, error) {
 	}
 
 	return count, nil
+}
+
+func SignDevilFruitAvatar(devilFruit *DevilFruit) error {
+	signedURL, error := awsclient.CloudFrontSigner.Sign(
+		awsclient.CLOUDFRONT_DOMAIN_NAME+devilFruit.AvatarSrc,
+		time.Now().Add(AVATAR_SRC_EXPIRATION_TIME),
+	)
+	devilFruit.AvatarSrc = signedURL
+	return error
+}
+
+func SignDevilFruitAvatars(devilFruits *[]DevilFruit) error {
+	for i := range *devilFruits {
+		error := SignDevilFruitAvatar(&(*devilFruits)[i])
+		if error != nil {
+			return error
+		}
+	}
+	return nil
 }

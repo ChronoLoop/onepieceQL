@@ -21,6 +21,12 @@ func GetDevilFruitQuery() *graphql.Field {
 			if err != nil {
 				return nil, err
 			}
+
+			err = models.SignDevilFruitAvatar(&devilFruit)
+			if err != nil {
+				return nil, err
+			}
+
 			return devilFruit, nil
 		},
 	}
@@ -54,6 +60,12 @@ func GetDevilFruitsQuery() *graphql.Field {
 			if err != nil {
 				return nil, err
 			}
+
+			err = models.SignDevilFruitAvatars(&devilFruits)
+			if err != nil {
+				return nil, err
+			}
+
 			count, err := models.CountDevilFruits(&findDevilFruitsArgs)
 			if err != nil {
 				return nil, err

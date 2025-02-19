@@ -52,8 +52,8 @@ func getDevilFruitLinks() []string {
 	var wg sync.WaitGroup
 	linksChan := make(chan []string, len(DEVIL_FRUIT_CATEGORY_LINKS))
 	for _, link := range DEVIL_FRUIT_CATEGORY_LINKS {
-		go getDevilFruitLinksFromPage(link, &wg, linksChan)
 		wg.Add(1)
+		go getDevilFruitLinksFromPage(link, &wg, linksChan)
 	}
 	go func() {
 		wg.Wait()
@@ -160,8 +160,8 @@ func getDevilFruitsFromLinks(pageLinks []string) []csvmodels.DevilFruitCSV {
 	devilFruitChan := make(chan csvmodels.DevilFruitCSV, len(pageLinks))
 	browser := rod.New().MustConnect()
 	for _, link := range pageLinks {
-		go getDevilFruitFromPage(browser, link, &wg, devilFruitChan)
 		wg.Add(1)
+		go getDevilFruitFromPage(browser, link, &wg, devilFruitChan)
 	}
 	go func() {
 		wg.Wait()

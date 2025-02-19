@@ -57,7 +57,7 @@ func StartServer() {
 	godotenv.Load(filepath.Join(exPath, "../.env"))
 	db.Initialize()
 
-	awsclient.ConfigS3()
+	awsclient.ConfigAWS()
 	models.SeedDatabase()
 
 	schemaConfig := graphql.SchemaConfig{

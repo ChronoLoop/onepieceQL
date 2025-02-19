@@ -37,8 +37,8 @@ func getCharacterLinks() []string {
 	var wg sync.WaitGroup
 	linksChan := make(chan []string, len(CHARACTER_LIST_LINKS))
 	for _, link := range CHARACTER_LIST_LINKS {
-		go getCharacterLinksFromPage(link, &wg, linksChan)
 		wg.Add(1)
+		go getCharacterLinksFromPage(link, &wg, linksChan)
 	}
 	go func() {
 		wg.Wait()
@@ -223,8 +223,8 @@ func getCharactersFromLinks(pageLinks []string) []csvmodels.CharacterCSV {
 	charactersChan := make(chan csvmodels.CharacterCSV, len(pageLinks))
 	browser := rod.New().MustConnect()
 	for _, link := range pageLinks {
-		go getCharacterFromPage(browser, link, &wg, charactersChan)
 		wg.Add(1)
+		go getCharacterFromPage(browser, link, &wg, charactersChan)
 	}
 	go func() {
 		wg.Wait()

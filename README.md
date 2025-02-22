@@ -1,4 +1,5 @@
 # OnePieceQL
+
 ![One_Piece_Anime_Logo](https://github.com/ChronoLoop/onepieceQL/assets/44091034/43a9d57d-fbc3-4bff-8516-8f35941e7e44)
 
 ## Introduction
@@ -56,12 +57,14 @@ pnpm run dev
 ```
 
 ## Environment Variables
+
 ```bash
 POSTGRES_USER=?
 POSTGRES_PASSWORD=?
 POSTGRES_DB=?
 POSTGRES_PORT=5432
 POSTGRES_HOST=localhost
+
 SERVER_ENV=development
 PORT=5000
 
@@ -69,4 +72,6 @@ AWS_REGION=?
 AWS_ACCESS_KEY_ID=?
 AWS_SECRET_ACCESS_KEY=?
 AWS_S3_BUCKET_NAME=?
+CLOUDFRONT_KEY_PAIR_ID=?
+CLOUDFRONT_PRIVATE_KEY=?
 ```

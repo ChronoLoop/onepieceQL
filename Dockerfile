@@ -1,4 +1,4 @@
-FROM node:20.11.1 AS clientBuilder
+FROM node:22.14.0 AS clientBuilder
 WORKDIR /app
 
 COPY ./client/. /app

@@ -53,41 +53,14 @@ const ExploreInitialDevilFruits = (props: ExploreInitialDevilFruitsProps) => {
         });
     });
 
-    const [devilFruitsData] = createResource(
-        () => ({
-            filter: {
-                name: debouncedFilter.name,
-                type: debouncedFilter.type,
-                previousOwner: debouncedFilter.previousOwner,
-                currentOwner: debouncedFilter.currentOwner,
-            },
-        }),
-        (args) => {
-            return getDevilFruits({ page: 1, filter: args.filter });
-        }
-    );
-    return (
-        <>
-            <For each={devilFruitsData()?.results}>
-                {(devilFruit) => <DevilFruitCard devilFruit={devilFruit} />}
-            </For>
-            <Show when={devilFruitsData()?.info.next}>
-                {(nextPage) => (
-                    <LoadNextDevilFruits
-                        nextPage={nextPage()}
-                        filter={props.filter}
-                    />
-                )}
-            </Show>
-        </>
-    );
+    return <LoadDevilFruits nextPage={1} filter={debouncedFilter} />;
 };
 
-type LoadNextDevilFruitsProps = {
+type LoadDevilFruitsProps = {
     filter: DevilFruitArgs['filter'];
     nextPage: number;
 };
-const LoadNextDevilFruits = (props: LoadNextDevilFruitsProps) => {
+const LoadDevilFruits = (props: LoadDevilFruitsProps) => {
     const [loadNext, setLoadNext] = createSignal(false);
     const [devilFruitsData] = createResource(
         () => ({
@@ -123,7 +96,7 @@ const LoadNextDevilFruits = (props: LoadNextDevilFruitsProps) => {
                 </For>
                 <Show when={devilFruitsData()?.info.next}>
                     {(nextPage) => (
-                        <LoadNextDevilFruits
+                        <LoadDevilFruits
                             nextPage={nextPage()}
                             filter={props.filter}
                         />
@@ -163,34 +136,7 @@ const ExploreInitialCharacters = (props: ExploreInitialCharactersProps) => {
         });
     });
 
-    const [characterData] = createResource(
-        () => ({
-            filter: {
-                name: debouncedFilter.name,
-                origin: debouncedFilter.origin,
-                bloodType: debouncedFilter.bloodType,
-                birthday: debouncedFilter.birthday,
-            },
-        }),
-        (args) => {
-            return getCharacters({ page: 1, filter: args.filter });
-        }
-    );
-    return (
-        <>
-            <For each={characterData()?.results}>
-                {(character) => <CharacterCard character={character} />}
-            </For>
-            <Show when={characterData()?.info.next}>
-                {(nextPage) => (
-                    <LoadNextCharacters
-                        nextPage={nextPage()}
-                        filter={props.filter}
-                    />
-                )}
-            </Show>
-        </>
-    );
+    return <LoadNextCharacters nextPage={1} filter={debouncedFilter} />;
 };
 
 type LoadNextCharactersProps = {

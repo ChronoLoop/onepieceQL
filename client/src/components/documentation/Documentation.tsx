@@ -90,9 +90,7 @@ export const DocumentationWrapper: ParentComponent = (props) => {
     return (
         <>
             <DocSidebar isOpen={isOpen()} setIsOpen={setIsOpen} />
-            <MainContentWrapper sidebarOpen={isOpen()}>
-                {props.children}
-            </MainContentWrapper>
+            <MainContentWrapper>{props.children}</MainContentWrapper>
         </>
     );
 };

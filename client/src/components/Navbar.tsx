@@ -18,7 +18,7 @@ const NavbarListItem: ParentComponent<{ class?: string }> = (props) => {
 
 const Navbar = () => {
     return (
-        <header class="sticky top-0 bg-white dark:bg-slate-900 border-b border-solid border-gray-300 dark:border-slate-700 h-12 w-full z-50">
+        <header class="sticky top-0 bg-white dark:bg-slate-900 border-b border-solid border-gray-300 dark:border-slate-700 w-full z-50 min-h-12">
             <nav class="flex items-center px-5 h-full">
                 <A href="/" class="mr-auto" aria-label="Home">
                     <img

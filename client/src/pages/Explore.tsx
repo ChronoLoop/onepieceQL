@@ -216,7 +216,7 @@ const Explore = () => {
                 devilFruitFilter={devilFruitFilter}
                 setDevilFruitFilter={setDevilFruitFilter}
             />
-            <MainContentWrapper sidebarOpen={isOpen()}>
+            <MainContentWrapper>
                 <div class="grid grid-cols-[repeat(auto-fit,_minmax(20rem,_1fr))] auto-rows-auto gap-4">
                     <Switch>
                         <Match when={category() === 'Character'}>

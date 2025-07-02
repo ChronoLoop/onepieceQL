@@ -39,3 +39,10 @@ button {
 body {
     @apply bg-white dark:bg-slate-900;
 }
+
+html,
+body,
+#root {
+    height: 100%;
+    width: 100%;
+}

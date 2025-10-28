@@ -1,8 +1,6 @@
 module github.com/ikevinws/onepieceQL
 
-go 1.22
-
-toolchain go1.22.1
+go 1.25.3
 
 require (
 	github.com/aws/aws-sdk-go-v2 v1.36.2
@@ -10,17 +8,17 @@ require (
 	github.com/aws/aws-sdk-go-v2/feature/cloudfront/sign v1.8.10
 	github.com/aws/aws-sdk-go-v2/feature/s3/manager v1.11.90
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.40.2
-	github.com/go-chi/chi/v5 v5.0.12
-	github.com/go-chi/cors v1.2.1
-	github.com/go-chi/httprate v0.9.0
+	github.com/go-chi/chi/v5 v5.2.3
+	github.com/go-chi/cors v1.2.2
+	github.com/go-chi/httprate v0.15.0
 	github.com/go-rod/rod v0.114.6
 	github.com/gocarina/gocsv v0.0.0-20230616125104-99d496ca653d
 	github.com/graphql-go/graphql v0.8.1
 	github.com/graphql-go/handler v0.2.3
-	github.com/jackc/pgx/v5 v5.7.1
+	github.com/jackc/pgx/v5 v5.7.5
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/joho/godotenv v1.5.1
-	github.com/pressly/goose/v3 v3.24.1
+	github.com/pressly/goose/v3 v3.26.0
 )
 
 require (
@@ -43,6 +41,7 @@ require (
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 // indirect
 	github.com/jackc/puddle/v2 v2.2.2 // indirect
+	github.com/klauspost/cpuid/v2 v2.3.0 // indirect
 	github.com/mfridman/interpolate v0.0.2 // indirect
 	github.com/sethvargo/go-retry v0.3.0 // indirect
 	github.com/ysmood/fetchup v0.2.4 // indirect
@@ -50,8 +49,10 @@ require (
 	github.com/ysmood/got v0.39.4 // indirect
 	github.com/ysmood/gson v0.7.3 // indirect
 	github.com/ysmood/leakless v0.8.0 // indirect
+	github.com/zeebo/xxh3 v1.0.2 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
-	golang.org/x/crypto v0.31.0 // indirect
-	golang.org/x/sync v0.11.0 // indirect
-	golang.org/x/text v0.21.0 // indirect
+	golang.org/x/crypto v0.40.0 // indirect
+	golang.org/x/sync v0.17.0 // indirect
+	golang.org/x/sys v0.37.0 // indirect
+	golang.org/x/text v0.27.0 // indirect
 )

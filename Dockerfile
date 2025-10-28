@@ -8,7 +8,7 @@ RUN pnpm run build
 
 
 
-FROM golang:1.22.1-alpine AS serverBuilder
+FROM golang:1.25.3-alpine AS serverBuilder
 WORKDIR /app
 
 COPY ./server/. /app

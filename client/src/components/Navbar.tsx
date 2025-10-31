@@ -40,7 +40,7 @@ const Navbar = () => {
                         <NavbarListItem>
                             <A
                                 href="/explore"
-                                class="bg-orange-700 rounded text-white px-3 py-0.5 inline-block"
+                                class="bg-orange-700 rounded-sm text-white px-3 py-0.5 inline-block"
                             >
                                 Explore
                             </A>

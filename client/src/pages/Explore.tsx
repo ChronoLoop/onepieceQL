@@ -217,7 +217,7 @@ const Explore = () => {
                 setDevilFruitFilter={setDevilFruitFilter}
             />
             <MainContentWrapper>
-                <div class="grid grid-cols-[repeat(auto-fit,_minmax(20rem,_1fr))] auto-rows-auto gap-4">
+                <div class="grid grid-cols-[repeat(auto-fit,minmax(20rem,1fr))] auto-rows-auto gap-4">
                     <Switch>
                         <Match when={category() === 'Character'}>
                             <Suspense fallback={<ExploreLoadSpinner />}>

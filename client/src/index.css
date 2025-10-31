@@ -1,48 +1,29 @@
-@import './styles/reset.css';
-@import './styles/theme.css';
+@import 'tailwindcss';
+@custom-variant dark (&:where(.dark, .dark *));
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-html {
-    box-sizing: border-box;
-    font-size: 16px;
-    @apply text-black;
+@theme {
+    --font-sans: 'Roboto', 'Arial', 'sans-serif';
 }
 
-*,
-*::before,
-*::after {
-    box-sizing: inherit;
+@layer base {
+    html {
+        font-size: 16px;
+        @apply text-black;
+    }
+
+    body {
+        @apply bg-white dark:bg-slate-900;
+    }
+
+    html,
+    body,
+    #root {
+        height: 100%;
+        width: 100%;
+    }
 }
 
-a {
-    text-decoration: none;
-    color: inherit;
-}
-
-button {
-    border: none;
-    margin: 0;
-    padding: 0;
-    width: auto;
-    overflow: visible;
-    background: transparent;
-    color: inherit;
-    font: inherit;
-    line-height: normal;
-    -webkit-font-smoothing: inherit;
-    -moz-osx-font-smoothing: inherit;
-}
-
-body {
-    @apply bg-white dark:bg-slate-900;
-}
-
-html,
-body,
-#root {
-    height: 100%;
-    width: 100%;
+.dark {
+    @apply text-white;
+    color-scheme: dark;
 }

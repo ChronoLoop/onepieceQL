@@ -8,7 +8,7 @@ const PageWrapper: ParentComponent = (props) => {
     return (
         <div class="flex flex-col h-full w-full">
             <Navbar />
-            <main class="w-full flex flex-grow relative min-h-0">
+            <main class="w-full flex grow relative min-h-0">
                 {props.children}
             </main>
         </div>

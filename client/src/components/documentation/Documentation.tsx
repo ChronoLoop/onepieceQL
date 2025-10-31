@@ -21,7 +21,7 @@ export const DocParagraph: ParentComponent = (props) => {
 export const DocH2: ParentComponent<{ id?: string }> = (props) => {
     return (
         <h2
-            class="text-2xl font-bold relative mt-5 mb-3 scroll-mt-16"
+            class="text-2xl font-bold relative mt-5 mb-3 scroll-mt-4"
             id={props.id}
         >
             {props.children}
@@ -32,7 +32,7 @@ export const DocH2: ParentComponent<{ id?: string }> = (props) => {
 export const DocH3: ParentComponent<{ id?: string }> = (props) => {
     return (
         <h3
-            class="text-xl font-bold relative mt-4 mb-2 scroll-mt-16"
+            class="text-xl font-bold relative mt-4 mb-2 scroll-mt-4"
             id={props.id}
         >
             {props.children}
